@@ -4,4 +4,4 @@ from rest_framework import serializers
 class team_memberSerializer(serializers.ModelSerializer):
     class Meta:
         model = team_member
-        excclude = ( 'created_at', 'updated_at')
+        exclude = ( 'created_at', 'updated_at')
