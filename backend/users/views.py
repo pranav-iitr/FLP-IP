@@ -67,3 +67,10 @@ class OTP_Router(ViewSet):
         else:
             return Response({'detail': 'Invalid OTP.'}, status=status.HTTP_400_BAD_REQUEST)
     
+class Signin(ViewSet):
+    permission_classes = [AllowAny]
+    def create(self, request):
+        
+        pass
+
+        
