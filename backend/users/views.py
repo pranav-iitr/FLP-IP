@@ -3,13 +3,14 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from django.utils.decorators import method_decorator
 from rest_framework import status
+from django.conf import settings
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
 
 from .models import User, organization, team_member, drone
-from .serializers import team_memberSerializer
+from .serializers import useSerilizers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django_ratelimit.decorators import ratelimit
@@ -33,7 +34,7 @@ class OTP_Router(ViewSet):
         otp_expiry = datetime.datetime.now() + datetime.timedelta(minutes=self.OTP_EXPIRY_MINUTES)
         request.session['otp'] = otp
         request.session['otp_expiry'] = otp_expiry.isoformat()
-        user = team_member.objects.filter(user__email=email).first()
+        user = User.objects.filter(email=email).first()
         print(user)
         if not user:
             return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
@@ -56,14 +57,30 @@ class OTP_Router(ViewSet):
         stored_otp = request.session.get('otp')
         print("email: "+email + " stored otp: " + stored_otp + " email otp: " + email_otp)
         if email_otp == stored_otp :
-            user = team_member.objects.filter(user__email=email).first()
+            user = User.objects.filter(email=email).first()
             if not user:
                 return Response({'detail': 'Email not registered.'}, status=status.HTTP_404_NOT_FOUND)
             user.status = 'accepted'
             del request.session['otp']
             user.save()
-            _serialised_user = team_memberSerializer(user)
-            return Response({'detail': 'OTP verified successfully.', 'user': _serialised_user.data}, status=status.HTTP_200_OK)
+            serialised_user = useSerilizers(user)
+            refresh = RefreshToken.for_user(user)
+            try:
+                access_token = str(refresh.access_token)
+            except TokenError:
+                return Response({'detail': 'Failed to generate access token.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response = Response({'detail': 'OTP verified successfully.', 'access_token': access_token, 'user' : serialised_user.data,  'refresh_token':str(refresh)}, status=status.HTTP_200_OK)
+
+            # Set the refresh token as a cookie in the response
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['REFRESH_TOKEN_COOKIE_NAME'],
+                value=str(refresh),
+                httponly=True,
+                samesite=settings.SIMPLE_JWT['REFRESH_TOKEN_COOKIE_SAMESITE'],
+                secure=settings.SIMPLE_JWT['REFRESH_TOKEN_COOKIE_SECURE'],
+            )
+
+            return response
         else:
             return Response({'detail': 'Invalid OTP.'}, status=status.HTTP_400_BAD_REQUEST)
     

@@ -1,7 +1,7 @@
-from .models import team_member
+from .models import User
 from rest_framework import serializers
 
-class team_memberSerializer(serializers.ModelSerializer):
+class useSerilizers(serializers.ModelSerializer):
     class Meta:
-        model = team_member
-        exclude = ( 'created_at', 'updated_at')
+        model = User
+        fields = ('id','username','email','first_name','status')

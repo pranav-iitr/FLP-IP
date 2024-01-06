@@ -1,7 +1,8 @@
 from django.db import models
 
 # Create your models here.
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission,BaseUserManager
+
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
@@ -17,6 +18,10 @@ class time_stamp(models.Model):
 # Create your models here.
 class User(AbstractUser):
     # Some rules adding username
+    status_choices = [
+        ("pending", "Pending"),
+        ("accepted", "Accepted"),
+        ("blocked", "Blocked"),          ]
     username_validator = UnicodeUsernameValidator()
     phone_no = models.CharField(max_length=10, blank=True)
     #Custom Field
@@ -35,7 +40,11 @@ class User(AbstractUser):
   
     # Field for login
     USERNAME_FIELD = 'email'
-
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)    
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=50, choices=status_choices, default='pending')
+    
     # Field for command createsuperuser
     REQUIRED_FIELDS = ['username','first_name','last_name']
 
