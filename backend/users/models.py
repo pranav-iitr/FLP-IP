@@ -15,6 +15,17 @@ class time_stamp(models.Model):
         abstract = True # This is an abstract class, so it will not be created in the database
     
 
+class organization(time_stamp):
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=200)
+    capacity = models.IntegerField( default=20) # default capacity is 20
+    
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        verbose_name_plural = "Organizations"
+
 # Create your models here.
 class User(AbstractUser):
     # Some rules adding username
@@ -22,6 +33,10 @@ class User(AbstractUser):
         ("pending", "Pending"),
         ("accepted", "Accepted"),
         ("blocked", "Blocked"),          ]
+    role_choices = [
+        ("admin", "Admin"),
+        ("team_member", "Team Member"),
+    ]
     username_validator = UnicodeUsernameValidator()
     phone_no = models.CharField(max_length=10, blank=True)
     #Custom Field
@@ -44,7 +59,9 @@ class User(AbstractUser):
     is_superuser = models.BooleanField(default=False)    
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=status_choices, default='pending')
-    
+    role = models.CharField(max_length=50, choices=role_choices, default='team_member')
+    organization = models.ForeignKey(organization, on_delete=models.CASCADE, related_name="organization_user", null=True, blank=True)
+
     # Field for command createsuperuser
     REQUIRED_FIELDS = ['username','first_name','last_name']
 
@@ -54,35 +71,17 @@ class User(AbstractUser):
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
-class organization(time_stamp):
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=200)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
-    capacity = models.IntegerField( default=20) # default capacity is 20
-    
-    class Meta:
-        verbose_name_plural = "Organizations"
 
-class team_member(time_stamp):
-    statusOptions = (
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('rejected', 'Rejected'),
-        ('removed', 'Removed'),
-        ('blocked', 'Blocked')
-    )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=50)
-    organization = models.ForeignKey(organization, on_delete=models.CASCADE, related_name="organization")
-    status = models.CharField(max_length=50, choices=statusOptions, default='pending')
-    class Meta:
-        verbose_name_plural = "Team Members"
 
-class drone(time_stamp):
+class Drone(time_stamp):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
     organization = models.ForeignKey(organization, on_delete=models.CASCADE, related_name="organization_drone")
     joinning_url = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='drone_images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
 
     class Meta:
         verbose_name_plural = "Drones"

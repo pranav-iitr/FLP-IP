@@ -4,19 +4,20 @@ from rest_framework.response import Response
 from django.utils.decorators import method_decorator
 from rest_framework import status
 from django.conf import settings
-
+from rest_framework.views import APIView
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-
-
-from .models import User, organization, team_member, drone
-from .serializers import useSerilizers
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from django_ratelimit.decorators import ratelimit
-import re
 import random
 import datetime
+from .models import User, organization,  Drone
+from .serializers import userSerilizers, miniUserSerilizers,DroneSerializer,DroneFullSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .permissions import IsAdmin
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from django_ratelimit.decorators import ratelimit
+
+
+
+
 @method_decorator(ratelimit(key='ip', rate='5/m', method=ratelimit.ALL, block=True), name='dispatch')
 class OTP_Router(ViewSet):
     permission_classes = [AllowAny]
@@ -63,7 +64,7 @@ class OTP_Router(ViewSet):
             user.status = 'accepted'
             del request.session['otp']
             user.save()
-            serialised_user = useSerilizers(user)
+            serialised_user = userSerilizers(user)
             refresh = RefreshToken.for_user(user)
             try:
                 access_token = str(refresh.access_token)
@@ -84,10 +85,110 @@ class OTP_Router(ViewSet):
         else:
             return Response({'detail': 'Invalid OTP.'}, status=status.HTTP_400_BAD_REQUEST)
     
-class Signin(ViewSet):
-    permission_classes = [AllowAny]
-    def create(self, request):
-        
+    
+
+
+class org_router(ViewSet):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    def create(self,request):
+        user = request.user
+        new_user_data = request.data
+        new_user_data['organization'] = user.organization.id
+        new_user_data['role'] = 'team_member'
+        new_user_data['status'] = 'pending'
+        rn=random.randint(1000, 9999)
+        new_user_data['password'] = f"{user.organization.name}_{rn}"
+        serializer = userSerilizers(data=new_user_data)
+        if serializer.is_valid():
+            serializer.save()
+            # To Do Send Mail to registered user
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def list(self,request):
+        user = request.user
+        org = user.organization
+        query_set = User.objects.filter(organization=org)
+        serializer = miniUserSerilizers(query_set, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self,request):
         pass
+    def update(self,request):
+        update_user_data = request.data
+        serializer = miniUserSerilizers(data=update_user_data)
+        if serializer.is_valid():
+            serializer.save()
+           
+            return Response( status=status.HTTP_204_NO_CONTENT)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def destroy(self,request):
+        
+        id = request.query_params.get('id')
+        user = User.objects.filter(id=id).first()
+        if user:
+            user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'detail':'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class drone_routes(ViewSet):
+    permission_classes = [IsAuthenticated]
+    def list(self,request):
+        user = request.user
+        org = user.organization
+        query_set = Drone.objects.filter(organization=org)
+        serializer = DroneSerializer(query_set, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    def retrieve(self,request):
+        id = request.query_params.get('id')
+        drone = Drone.objects.filter(id=id).first()
+        if drone:
+            data = { drone.joinning_url}
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail':'Drone not found'}, status=status.HTTP_404_NOT_FOUND)
+    def create(self,request):
+        user = request.user
+        new_drone_data = request.data
+        new_drone_data['organization'] = user.organization.id
+        serializer = DroneSerializer(data=new_drone_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def update(self,request):
+        update_drone_data = request.data
+        serializer = DroneSerializer(data=update_drone_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response( status=status.HTTP_204_NO_CONTENT)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def destroy(self,request):
+        id = request.query_params.get('id')
+        drone = Drone.objects.filter(id=id).first()
+        if drone:
+            drone.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'detail':'Drone not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+    
+        
+   
+    
+        
+        
+
+    
 
         
