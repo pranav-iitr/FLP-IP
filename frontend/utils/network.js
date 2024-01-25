@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCookie } from "cookies-next";
 
 export function addQueryParams(urlString, queryParams) {
   const query = Object.keys(queryParams)
@@ -12,14 +13,6 @@ export function addQueryParams(urlString, queryParams) {
   return `${urlString}?${query}`;
 }
 
-const addClientIdToBody = (body) => {
-  return {
-    ...body,
-    client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-    client_secret: process.env.NEXT_PUBLIC_CLIENT_SECRET,
-  };
-};
-
 export function request(
   method,
   url,
@@ -29,10 +22,10 @@ export function request(
 ) {
   return new Promise(async (resolve, reject) => {
     let headers = { "content-type": contentType };
-    const body = addClientIdToBody(data);
+    const body = data;
 
     if (authorized) {
-      const token = await getKey(TOKEN_TYPE);
+      const token = await getCookie("token");
       // const body = addClientIdToBody(data);
       // console.log("body =>",body);
       if (token) {
@@ -54,11 +47,10 @@ export function request(
         reject("Unauthorized");
       }
     } else {
-     
       axios({
         method,
         url,
-        body,
+        data,
         headers,
         responseType: "json",
       })
@@ -93,7 +85,7 @@ const get_base_api = () => {
   // else if (env == 'staging')
   //   return process.env.STAGING_SERVER;
 
-  return process.env.NEXT_PUBLIC_DEV_SERVER;
+  return "http://localhost:8000";
 };
 
 export const BASE_API = get_base_api();
@@ -103,7 +95,7 @@ function getBaseImgUrl() {
   let env = process.env.NODE_ENV;
   if (env === "production" || env === "staging" || env === "dev") return "";
   else {
-    return process.env.NEXT_PUBLIC_DEV_SERVER;
+    return "http://localhost:8000";
   }
 }
 

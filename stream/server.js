@@ -1,53 +1,67 @@
-
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-const port = 5000;
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+      origin: 'http://localhost:3006', // Replace with the origin of your React app
+      methods: ["*"],
+    },
+  });
+  
 
-// Serve static files from the public directory
-app.use(express.static(__dirname + '/public'));
+app.use(require('cors')())
 
-// Route for the home page
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-// Socket.io connection event
 io.on('connection', (socket) => {
-  console.log('A user connected.');
+  console.log('A user connected');
 
-  // Join room event
-  socket.on('join room', (roomId) => {
-    socket.join(roomId);
-    console.log('User joined room:', roomId);
-  });
-
-  // Offer event
-  socket.on('offer', (offer, roomId) => {
-    socket.to(roomId).emit('offer', offer);
-    console.log('Sent offer to room:', roomId);
-  });
-
-  // Answer event
-  socket.on('answer', (answer, roomId) => {
-    socket.to(roomId).emit('answer', answer);
-    console.log('Sent answer to room:', roomId);
-  });
-
-  // ICE candidate event
-  socket.on('ice candidate', (candidate, roomId) => {
-    socket.to(roomId).emit('ice candidate', candidate);
-    console.log('Sent ICE candidate to room:', roomId);
-  });
-
-  // Disconnect event
   socket.on('disconnect', () => {
-    console.log('A user disconnected.');
+    console.log('User disconnected');
+  });
+
+  socket.on('stream', (data) => {
+    io.emit('stream', data);
   });
 });
 
-// Start server
-http.listen(port, () => {
-  console.log(`Server running on port ${port}.`);
+// const rooms = new Map();
+
+// io.on('connection', (socket) => {
+//   console.log('A user connected');
+
+//   socket.on('joinRoom', (videoId) => {
+//     console.log("room",videoId)
+//     // Get the room associated with the videoId or create a new room
+//     const room = rooms.get(videoId) || videoId;
+
+//     // Join the room
+//     socket.join(room);
+
+//     // Store room information
+//     rooms.set(videoId, room);
+//   });
+
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected');
+//   });
+
+//   socket.on('stream', (data) => {
+//     console.log(rooms)
+//     // Broadcast the stream to all clients in the room
+//     const [videoId, streamData] = data.split('|');
+//     const room = rooms.get(videoId) || videoId;
+//     io.to(room).emit('stream', streamData);
+//   });
+// });
+
+
+
+server.listen(4000, () => {
+  console.log('Server is running on http://localhost:4000');
 });

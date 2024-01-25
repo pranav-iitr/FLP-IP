@@ -1,16 +1,41 @@
+<!-- public/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>WebRTC Example</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Streaming</title>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <h1>WebRTC Example</h1>
-  <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
+    socket.emit('joinRoom', "1");
 
-    // Your WebRTC implementation goes here using the socket for signaling
-    // Set up your peer connection, handle offers, answers, ICE candidates, etc.
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        const video = document.createElement('video');
+        document.body.appendChild(video);
+        video.srcObject = stream;
+        video.play();
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        document.body.appendChild(canvas);
+
+        video.addEventListener('play', () => {
+          function draw() {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            socket.emit('stream', canvas.toDataURL('image/jpeg', 0.5));
+            setTimeout(draw, 100);
+          }
+          draw();
+        });
+      })
+      .catch((error) => {
+        console.error('Error accessing camera:', error);
+      });
   </script>
 </body>
 </html>
+

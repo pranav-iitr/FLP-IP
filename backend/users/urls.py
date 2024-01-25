@@ -7,8 +7,8 @@ auth_router = SimpleRouter()
 org_user_router = SimpleRouter()
 drone_router = SimpleRouter()
 auth_router.register('otp',OTP_Router,basename='otp')
-org_user_router.register('user',org_router,basename='user')
-drone_router.register('drone',drone_routes,basename='drone')
+org_user_router.register('',org_router,basename='user')
+drone_router.register('',drone_routes,basename='drone')
 
 # auth_router.register('',SignUp_Router,basename='signup')
 urlpatterns = [
