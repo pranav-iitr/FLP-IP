@@ -31,4 +31,4 @@ WORKDIR /usr/backend
 
 COPY . .
 
-CMD ["sh", "-c", "python manage.py collectstatic --no-input; python manage.py migrate;python manage.py runserver"]
+CMD ["sh", "-c", "python manage.py collectstatic --no-input; python manage.py migrate;gunicorn backend.wsgi:application -b 0.0.0.0:8009"]

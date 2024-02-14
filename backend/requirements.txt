@@ -3,6 +3,10 @@ django_ratelimit==4.1.0
 djangorestframework==3.14.0
 djangorestframework_simplejwt==5.3.1
 python-dotenv==1.0.0
+redis==4.3.5
 rest_framework_simplejwt==0.0.2
 django-cors-headers==4.3.1
 Pillow==10.1.0
+whitenoise==5.3.0
+celery==5.2.7
+gunicorn==20.0.4

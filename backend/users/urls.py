@@ -15,4 +15,5 @@ urlpatterns = [
     path('auth/', include(auth_router.urls)),
     path('org/', include(org_user_router.urls)),
     path('drone/', include(drone_router.urls)),
+    path('retrive/',get_id.as_view())
 ]

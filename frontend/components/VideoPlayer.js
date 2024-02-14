@@ -1,20 +1,22 @@
-import { useEffect, useRef } from 'react';
-import io from 'socket.io-client';
+import { useEffect, useRef} from "react";
+import io from "socket.io-client";
 
-const VideoPlayer = () => {
+const VideoPlayer = (props) => {
   const videoRef = useRef();
 
   useEffect(() => {
-    const socket = io('http://localhost:4000/video');
+    const socket = io(props?.url);
+    // const room_id = room;
 
-    socket.emit('joinRoom', "1");
+    socket.emit("joinRoom", props?.room);
 
-    socket.on('video', (data) => {
-      const blob = new Blob([data], { type: 'video/mp4' });
-      console.log(blob)
-      const videoURL = URL.createObjectURL(blob);
-      videoRef.current.src = videoURL;
-
+    socket.on("stream", (data) => {
+      // console.log(data)
+      const img = new Image();
+      img.src = `data:image/jpeg;base64,${data?.image}`;
+      img.onload = () => {
+        videoRef.current.src = img.src;
+      };
     });
 
     return () => {
@@ -22,7 +24,11 @@ const VideoPlayer = () => {
     };
   }, []);
 
-  return <video ref={videoRef} controls />;
+  return (
+    <div>
+      <img ref={videoRef} />
+    </div>
+  );
 };
 
 export default VideoPlayer;

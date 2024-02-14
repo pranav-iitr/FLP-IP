@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.conf import settings
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from django.utils.decorators import method_decorator
@@ -14,6 +14,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IsAdmin
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django_ratelimit.decorators import ratelimit
+from django.shortcuts import get_object_or_404
+from .tasks import send_feedback_email_task
 
 
 
@@ -30,20 +32,20 @@ class OTP_Router(ViewSet):
         # Generate random OTP
 
         otp = str(random.randint(1000, 9999))
-        print(otp)
-        # Store the generated OTP and its expiry timestamp in user's session
+        
         otp_expiry = datetime.datetime.now() + datetime.timedelta(minutes=self.OTP_EXPIRY_MINUTES)
         request.session['otp'] = otp
         request.session['otp_expiry'] = otp_expiry.isoformat()
         user = User.objects.filter(email=email).first()
-        print(user)
+    
         if not user:
             return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
         else:
             #TODO send otp to user
+            message = f"your otp for login is {otp}"
+            send_feedback_email_task.delay(email,message,"OTP For Login")
 
-
-            pass
+         
         
         return Response({'detail': 'OTP generated successfully.'}, status=status.HTTP_200_OK)
 
@@ -58,8 +60,8 @@ class OTP_Router(ViewSet):
             return Response({'detail': 'Email and OTP are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         stored_otp = request.session.get('otp')
-        # print("email: "+email + " stored otp: " + stored_otp + " email otp: " + email_otp)
-        if email_otp == stored_otp or email_otp == '1234' :
+      
+        if email_otp == stored_otp  :
             user = User.objects.filter(email=email).first()
             if not user:
                 return Response({'detail': 'Email not registered.'}, status=status.HTTP_404_NOT_FOUND)
@@ -144,8 +146,9 @@ class drone_routes(ViewSet):
         id = request.query_params.get('id')
         if id:
             drone = Drone.objects.filter(id=id).first()
+
             if drone:
-                data = { drone.joinning_url}
+                data = { "id":drone.joinning_url,"url":settings.WS_URL}
                 return Response(data, status=status.HTTP_200_OK)
             else:
                 return Response({'detail':'Drone not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -159,6 +162,7 @@ class drone_routes(ViewSet):
     def retrieve(self,request):
         id = request.query_params.get('id')
         drone = Drone.objects.filter(id=id).first()
+        
         if drone:
             data = { drone.joinning_url}
             return Response(data, status=status.HTTP_200_OK)
@@ -192,6 +196,16 @@ class drone_routes(ViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'detail':'Drone not found'}, status=status.HTTP_404_NOT_FOUND)
+class get_id(APIView):
+    def get(self,request):
+        id = request.query_params.get('id')
+        secret = request.query_params.get('secret')
+        queryset = Drone.objects.filter(id=id,secret=secret)
+        obj = get_object_or_404(queryset)
+        return Response(data={
+            'url':settings.WS_URL,
+            'room_id':obj.joinning_url
+        })
 
 
     

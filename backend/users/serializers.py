@@ -16,7 +16,7 @@ class miniUserSerilizers(serializers.ModelSerializer):
 class DroneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drone
-        exclude = ('organization','joinning_url')
+        exclude = ('organization','joinning_url','secret')
 class DroneFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drone

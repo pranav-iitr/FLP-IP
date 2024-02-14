@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 
 # Create your models here.
@@ -6,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission,BaseUserM
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
-
+import secrets
 class time_stamp(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -79,10 +80,17 @@ class Drone(time_stamp):
     organization = models.ForeignKey(organization, on_delete=models.CASCADE, related_name="organization_drone")
     joinning_url = models.CharField(max_length=200)
     image = models.ImageField(upload_to='drone_images/', null=True, blank=True)
+    secret = models.CharField(max_length=16)
 
     def __str__(self):
         return f"{self.name}"
-
+    
+    def save(self,*args, **kwargs) :
+        if not self.secret:
+            self.secret = secrets.token_urlsafe(16)
+        if not self.joinning_url:
+            self.joinning_url = secrets.token_urlsafe(8)
+        return super(Drone, self).save(*args, **kwargs)
     class Meta:
         verbose_name_plural = "Drones"
     

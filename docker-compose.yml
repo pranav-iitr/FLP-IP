@@ -1,5 +1,10 @@
 version: "3"
 services:
+  redis:
+    image: redis:7-alpine
+    command: redis-server
+    expose:
+         - 6379
 
 
   backend:
@@ -12,9 +17,28 @@ services:
     volumes:
             - ./backend:/usr/backend
     expose:
-      - 8000
+      - 8009
     ports:
-      - "8000:8000"
+      - "8009:8009"
+
+  worker:
+      restart: always
+      build:
+            context: ./backend
+            dockerfile : Dockerfile
+      command: celery -A backend worker -l info -P gevent
+      working_dir: /usr/backend
+      volumes:
+          - ./backend:/usr/backend
+  socket:
+    build:
+      context: ./stream
+      dockerfile: Dockerfile
+    working_dir: /usr/socket
+    expose:
+      - 4076
+    ports:
+      - '4076:4076'
   esummit22-frontend:
     build:
       context: ./frontend
@@ -22,9 +46,9 @@ services:
     working_dir: /usr/frontend
 
     expose:
-      - 3000
+      - 3060
     ports:
-      - "3000:3000" 
+      - "3060:3060" 
 
 
   

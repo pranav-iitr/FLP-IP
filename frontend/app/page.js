@@ -1,16 +1,15 @@
 "use client";
-import { useState, useEffect,useRef } from "react";
-import { getCookie } from "cookies-next";
+import { useState, useEffect } from "react";
+// import { getCookie } from "cookies-next";
 import { getDrones, getDrone } from "@/hooks/drone";
 import { BASE_IMG_URL } from "@/utils/network";
 import VideoPlayer from "@/components/VideoPlayer";
-import io from 'socket.io-client';
+
 export default function Home() {
   const [droneData, setDroneData] = useState([]);
-  const [route, setRoute] = useState(1);
-  const [droneUrl, setDroneUrl] = useState("");
-  const [user, setUser] = useState({});
-  const videoRef = useRef();
+  const [route, setRoute] = useState(0);
+  const [droneUrl, setDroneUrl] = useState({});
+  // const [user, setUser] = useState({});
   useEffect(() => {
     getDrones()
       .then((res) => {
@@ -20,8 +19,8 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-    const User = JSON.parse(getCookie("USER"));
-    setUser(User);
+    // const User = JSON.parse(getCookie("USER"));
+    // setUser(User);
   }, []);
 
   // useEffect(() => {
@@ -110,6 +109,7 @@ export default function Home() {
                             .then((res) => {
                               console.log(res.data);
                               setDroneUrl(res.data);
+                              console.log(droneUrl);
                               setRoute(1);
                             })
                             .catch((err) => {
@@ -141,7 +141,7 @@ export default function Home() {
             </>
           ) : route == 1 ? (
             <div className="m-auto ">
-              <VideoPlayer/>
+              <VideoPlayer room={droneUrl?.id} url={droneUrl?.url} />
             </div>
           ) : (
             <></>
