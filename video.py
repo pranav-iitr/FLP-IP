@@ -2,11 +2,11 @@ import cv2
 import socketio
 import base64
 import requests
+import argparse
 
 
-response = requests.get(f"http://b.esummit.in/api/retrive/?id={1}&secret=km4rR4LKV44eu0sqbi4YDg")
-data = response.json()
-print(data)
+
+
 # Initialize Socket.IO server
 sio = socketio.Server()
 
@@ -14,11 +14,11 @@ sio = socketio.Server()
 client = socketio.Client()
 
 # Connect to the server
-client.connect(data['url'])
+client.connect("http://127.0.0.1:5000")
 
 # Room ID to join
-room_id = data['room_id']
-print(data)
+room_id = 10
+
 # Function to send the image to the server
 def send_image(image):
     # Encode the image as JPEG and then as Base64

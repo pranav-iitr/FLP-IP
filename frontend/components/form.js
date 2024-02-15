@@ -4,12 +4,13 @@ import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { setCookie } from "cookies-next";
 import { generateOTPrequest, verifyOTPRequest } from "@/hooks/auth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function Form() {
   const [email, setEmail] = useState("");
   const [OTP, setOTP] = useState("");
   const [otpStatus, setOtpStatus] = useState(false);
+  const router = useRouter()
   const emailValidation = (email) => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
@@ -97,11 +98,12 @@ function Form() {
                     setCookie("USER", res.data.user, {
                       maxAge: 30 * 24 * 60 * 60,
                     });
+                    router.push("/");
                   })
                   .catch((err) => {
                     toast.error("Invalid OTP");
                   });
-                redirect("/");
+                
               } else {
                 toast.error("Genrate OTP");
               }
