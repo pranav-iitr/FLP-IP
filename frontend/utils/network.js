@@ -18,7 +18,7 @@ export function request(
   url,
   data,
   authorized = true,
-  contentType = "application/json",
+  contentType = "application/json"
 ) {
   return new Promise(async (resolve, reject) => {
     let headers = { "content-type": contentType };

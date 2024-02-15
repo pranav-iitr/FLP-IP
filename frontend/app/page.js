@@ -20,8 +20,8 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-    const USER = getCookie("USER")
-    
+    const USER = getCookie("USER");
+
     if (!USER) {
       redirect("/login");
     }
