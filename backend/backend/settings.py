@@ -1,7 +1,6 @@
 
 
 from pathlib import Path
-from dotenv import load_dotenv
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -15,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1+%oi@%eiua125heh!ed4fy@hpq0w60_vmr93k3j!9r28g&r41'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -145,6 +144,17 @@ MEDIA_ROOT = '/media/'
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 CELERY_TASK_TIME_LIMIT = 30 * 60 * 60 * 60 * 60
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.gmail.com'
+
+
+EMAIL_HOST_USER="no.reply.esummit@gmail.com"
+EMAIL_HOST_PASSWORD="pnqlnairfeuhncmg"
+
 
 STORAGES = {
     "staticfiles": {

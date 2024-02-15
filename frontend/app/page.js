@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-// import { getCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import { getDrones, getDrone } from "@/hooks/drone";
 import { BASE_IMG_URL } from "@/utils/network";
 import VideoPlayer from "@/components/VideoPlayer";
+import { redirect } from 'next/navigation'
 
 export default function Home() {
   const [droneData, setDroneData] = useState([]);
@@ -19,33 +20,12 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-    // const User = JSON.parse(getCookie("USER"));
+    const User = JSON.parse(getCookie("USER"));
+    if(!User){
+      redirect("/login")
+    }
     // setUser(User);
   }, []);
-
-  // useEffect(() => {
-  //   const ws = new WebSocket(droneUrl);
-
-  //   ws.onmessage = (event) => {
-  //     if (event.data instanceof Blob) {
-  //       const blob = new Blob([event.data], { type: 'video/mp4' });
-  //       const url = URL.createObjectURL(blob);
-  //       videoRef.current.src = url;
-  //     }
-  //   };
-
-  //   ws.onclose = () => {
-  //     console.log('WebSocket closed');
-  //   };
-
-  //   ws.onerror = (error) => {
-  //     console.error(`WebSocket error: ${error}`);
-  //   };
-
-  //   return () => {
-  //     ws.close();
-  //   };
-  // }, [droneUrl]);
 
   return (
     <main className="flex flex-col  ">
