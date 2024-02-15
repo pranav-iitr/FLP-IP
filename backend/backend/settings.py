@@ -78,7 +78,7 @@ DATABASES = {
     }
 }
 
-WS_URL = "http://ws.esummit.in/"
+WS_URL = "http://ws.esummit.in"
 
 AUTH_USER_MODEL = 'users.User'
 # Password validation

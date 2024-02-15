@@ -10,7 +10,7 @@ function Form() {
   const [email, setEmail] = useState("");
   const [OTP, setOTP] = useState("");
   const [otpStatus, setOtpStatus] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const emailValidation = (email) => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
@@ -103,7 +103,6 @@ function Form() {
                   .catch((err) => {
                     toast.error("Invalid OTP");
                   });
-                
               } else {
                 toast.error("Genrate OTP");
               }
