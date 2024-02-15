@@ -97,11 +97,11 @@ function Form() {
                     setCookie("USER", res.data.user, {
                       maxAge: 30 * 24 * 60 * 60,
                     });
-                    redirect("/");
                   })
                   .catch((err) => {
                     toast.error("Invalid OTP");
                   });
+                redirect("/");
               } else {
                 toast.error("Genrate OTP");
               }
