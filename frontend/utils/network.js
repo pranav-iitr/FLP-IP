@@ -85,7 +85,7 @@ const get_base_api = () => {
   // else if (env == 'staging')
   //   return process.env.STAGING_SERVER;
 
-  return "http://localhost:8000";
+  return "http://b.esummit.in";
 };
 
 export const BASE_API = get_base_api();
