@@ -43,7 +43,7 @@ class OTP_Router(ViewSet):
         else:
             #TODO send otp to user
             message = f"your otp for login is {otp}"
-            send_feedback_email_task.delay(email,message,"OTP For Login")
+            send_feedback_email_task(email,message,"OTP For Login")
 
          
         

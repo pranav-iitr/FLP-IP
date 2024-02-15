@@ -3,7 +3,7 @@ from .models import User, organization, Drone
 
 class DroneAdmin(admin.ModelAdmin):
     # List of fields to be displayed in the change form
-    list_display = ( 'name', 'description','organization' ,'joinning_url' ,'image')
+    list_display = ( 'name', 'description','organization'  ,'image')
 
     # List of fields to be displayed in the change form, but as read-only
     readonly_fields = ('secret',)
