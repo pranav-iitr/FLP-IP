@@ -78,7 +78,7 @@ DATABASES = {
     }
 }
 
-WS_URL = "http://localhost:4000"
+WS_URL = "http://ws.esummit.in/"
 
 AUTH_USER_MODEL = 'users.User'
 # Password validation

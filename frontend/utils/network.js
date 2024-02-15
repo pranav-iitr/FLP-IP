@@ -95,7 +95,7 @@ function getBaseImgUrl() {
   let env = process.env.NODE_ENV;
   if (env === "production" || env === "staging" || env === "dev") return "";
   else {
-    return "http://localhost:8000";
+    return "http://b.esummit.in";
   }
 }
 

@@ -20,8 +20,9 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-    const User = JSON.parse(getCookie("USER"));
-    if (!User) {
+    const USER = getCookie("USER")
+    
+    if (!USER) {
       redirect("/login");
     }
     // setUser(User);
