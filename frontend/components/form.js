@@ -4,7 +4,7 @@ import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { setCookie } from "cookies-next";
 import { generateOTPrequest, verifyOTPRequest } from "@/hooks/auth";
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
 function Form() {
   const [email, setEmail] = useState("");
@@ -97,8 +97,7 @@ function Form() {
                     setCookie("USER", res.data.user, {
                       maxAge: 30 * 24 * 60 * 60,
                     });
-                    redirect('/')
-
+                    redirect("/");
                   })
                   .catch((err) => {
                     toast.error("Invalid OTP");

@@ -4,7 +4,7 @@ import { getCookie } from "cookies-next";
 import { getDrones, getDrone } from "@/hooks/drone";
 import { BASE_IMG_URL } from "@/utils/network";
 import VideoPlayer from "@/components/VideoPlayer";
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
 export default function Home() {
   const [droneData, setDroneData] = useState([]);
@@ -21,8 +21,8 @@ export default function Home() {
         console.log(err);
       });
     const User = JSON.parse(getCookie("USER"));
-    if(!User){
-      redirect("/login")
+    if (!User) {
+      redirect("/login");
     }
     // setUser(User);
   }, []);
