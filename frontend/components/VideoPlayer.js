@@ -1,4 +1,4 @@
-import { useEffect, useRef} from "react";
+import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
 const VideoPlayer = (props) => {
@@ -14,6 +14,7 @@ const VideoPlayer = (props) => {
       // console.log(data)
       const img = new Image();
       img.src = `data:image/jpeg;base64,${data?.image}`;
+      videoRef.className = "w-full h-[92vh]";
       img.onload = () => {
         videoRef.current.src = img.src;
       };
@@ -26,7 +27,7 @@ const VideoPlayer = (props) => {
 
   return (
     <div>
-      <img ref={videoRef} />
+      <img className="w-full h-[90vh]" src={"/loader.gif"} ref={videoRef} />
     </div>
   );
 };

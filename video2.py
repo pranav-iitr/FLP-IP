@@ -18,6 +18,7 @@ client.connect(data['url'])
 
 # Room ID to join
 room_id = data['room_id']
+counter = 0
 print(data)
 # Function to send the image to the server
 def send_image(image):
@@ -32,24 +33,32 @@ def send_image(image):
     client.emit('stream', {'image': jpg_str, 'room': room_id})
 
 # Open the video capture device (camera)
-cap = cv2.VideoCapture(0)
+url = 0
+cap = cv2.VideoCapture(url)
 
 while True:
     # Capture frame-by-frame
     ret, frame = cap.read()
+    if not ret:
+        cap.release()
+        cap = cv2.VideoCapture(url)
 
-    # Process the frame (resize, crop, or other operations as needed)
-    # For example, resizing the frame to a specific width and height
-    frame = cv2.resize(frame, (640, 480))
+    else:
+        # Process the frame (resize, crop, or other operations as needed)
+        # For example, resizing the frame to a specific width and height
+        if counter%3==0:
+            frame = cv2.resize(frame, (640, 480))
+    
+            # Send the processed frame to the server
+            send_image(frame)
+            
+            # Display the frame locally (optional)
+        counter += 1 
+        print("send",counter)
+        cv2.imshow('Local Stream', frame)
 
-    # Send the processed frame to the server
-    send_image(frame)
-
-    # Display the frame locally (optional)
-    cv2.imshow('Local Stream', frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
 # Release the capture object and close OpenCV windows
 cap.release()

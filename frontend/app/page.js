@@ -1,15 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getCookie } from "cookies-next";
+import { getCookie, deleteCookie } from "cookies-next";
 import { getDrones, getDrone } from "@/hooks/drone";
 import { BASE_IMG_URL } from "@/utils/network";
 import VideoPlayer from "@/components/VideoPlayer";
 import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [droneData, setDroneData] = useState([]);
   const [route, setRoute] = useState(0);
   const [droneUrl, setDroneUrl] = useState({});
+  const router = useRouter();
   // const [user, setUser] = useState({});
   useEffect(() => {
     getDrones()
@@ -46,35 +48,53 @@ export default function Home() {
             boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
             backdropFilter: "blur(35px)",
           }}
-          className="flex flex-col h-full w-[20vw] bg-[#424242] items-center "
+          className="flex flex-col h-full w-[20vw] bg-[#424242] items-center justify-betwen "
         >
-          <div
-            onClick={() => {
-              if (droneUrl != "") {
-                setRoute(1);
-              }
-            }}
-            style={{
-              boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
-              backdropFilter: "blur(35px)",
-            }}
-            className="bg-[#E4E4E4] flex items-center justify-between w-[80%] mt-8 px-4 py-1 rounded-lg cursor-pointer"
-          >
-            <div>Live Operations</div>{" "}
-            <img className="w-12" src="/imgs/camera.png" />
+          <div className="flex flex-col w-[20vw] items-center">
+            <div
+              onClick={() => {
+                if (droneUrl != "") {
+                  setRoute(1);
+                }
+              }}
+              style={{
+                boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
+                backdropFilter: "blur(35px)",
+              }}
+              className="bg-[#E4E4E4] flex items-center justify-between w-[80%] mt-8 px-4 py-1 rounded-lg cursor-pointer"
+            >
+              <div>Live Operations</div>{" "}
+              <img className="w-12" src="/imgs/camera.png" />
+            </div>
+            <div
+              style={{
+                boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
+                backdropFilter: "blur(35px)",
+              }}
+              onClick={() => {
+                setRoute(0);
+              }}
+              className="bg-[#E4E4E4] flex items-center justify-between w-[80%] mt-4 px-4 py-1 cursor-pointer rounded-lg"
+            >
+              <div>Your Devices</div>{" "}
+              <img className="w-12" src="/imgs/Drone.png" />
+            </div>
           </div>
-          <div
-            style={{
-              boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
-              backdropFilter: "blur(35px)",
-            }}
-            onClick={() => {
-              setRoute(0);
-            }}
-            className="bg-[#E4E4E4] flex items-center justify-between w-[80%] mt-4 px-4 py-1 cursor-pointer rounded-lg"
-          >
-            <div>Your Devices</div>{" "}
-            <img className="w-12" src="/imgs/drone.png" />
+          <div className="flex-1 flex items-end w-full justify-center">
+            {" "}
+            <div
+              onClick={() => {
+                deleteCookie("USER");
+                router.push("/login");
+              }}
+              style={{
+                boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
+                backdropFilter: "blur(35px)",
+              }}
+              className="bg-[#E4E4E4] justify-center flex items-center w-[100%] mt-8 px-4 py-1  cursor-pointer"
+            >
+              <div>Logout</div>
+            </div>{" "}
           </div>
         </div>
         <div className="flex h-full w-[80vw]  ">
