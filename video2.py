@@ -2,11 +2,14 @@ import cv2
 import socketio
 import base64
 import requests
+import numpy as np
+import rtsp
+import io
 
 
 response = requests.get(f"http://b.esummit.in/api/retrive/?id={1}&secret=km4rR4LKV44eu0sqbi4YDg")
 data = response.json()
-print(data)
+
 # Initialize Socket.IO server
 sio = socketio.Server()
 
@@ -19,12 +22,15 @@ client.connect(data['url'])
 # Room ID to join
 room_id = data['room_id']
 counter = 0
-print(data)
+
 # Function to send the image to the server
-def send_image(image):
-    # Encode the image as JPEG and then as Base64
-    _, buffer = cv2.imencode('.jpg', image)
-    jpg_bytes = base64.b64encode(buffer)
+def send_image(pil_image):
+    # Convert the PIL Image to bytes in JPEG format
+    jpg_buffer = io.BytesIO()
+    pil_image.save(jpg_buffer, format='JPEG')
+
+    # Convert the JPEG bytes to Base64
+    jpg_bytes = base64.b64encode(jpg_buffer.getvalue())
 
     # Convert bytes to string for Socket.IO
     jpg_str = jpg_bytes.decode('utf-8')
@@ -32,37 +38,32 @@ def send_image(image):
     # Emit the 'stream' event with the Base64-encoded image and room ID
     client.emit('stream', {'image': jpg_str, 'room': room_id})
 
+
 # Open the video capture device (camera)
-url = 0
-cap = cv2.VideoCapture(url)
+url = "rtsp://127.0.0.1:8554/live"
+rtsp_server_uri = 'rtsp://127.0.0.1:8554/live'
+client_RT = rtsp.Client(rtsp_server_uri=rtsp_server_uri, verbose=True)
 
 while True:
-    # Capture frame-by-frame
-    ret, frame = cap.read()
-    if not ret:
-        cap.release()
-        cap = cv2.VideoCapture(url)
 
-    else:
-        # Process the frame (resize, crop, or other operations as needed)
-        # For example, resizing the frame to a specific width and height
+    image = client_RT.read()
+        
+        # Check if the image is not None before showing it
+    if image is not None:
+
+
         if counter%3==0:
-            frame = cv2.resize(frame, (640, 480))
-    
-            # Send the processed frame to the server
-            send_image(frame)
-            
-            # Display the frame locally (optional)
-        counter += 1 
-        print("send",counter)
-        cv2.imshow('Local Stream', frame)
+            send_image(image)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        counter += 1 
+        # cv2.imshow('Local Stream', frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-# Release the capture object and close OpenCV windows
-cap.release()
+
 cv2.destroyAllWindows()
 
 # Disconnect from the Socket.IO server when the program exits
 client.disconnect()
+# docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' f1d4bd5d19002dd082f9cd963a9fa3b756c6f69c5baab8a6d4d0f3dfb360bb6d

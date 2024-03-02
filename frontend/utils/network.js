@@ -36,6 +36,7 @@ export function request(
           body,
           headers,
           responseType: "json",
+          withCredentials: true,
         })
           .then((res) => {
             resolve(res);
@@ -53,6 +54,7 @@ export function request(
         data,
         headers,
         responseType: "json",
+        withCredentials: true,
       })
         .then((res) => {
           resolve(res);
@@ -93,7 +95,7 @@ export const getUrl = (relUrl) => `${BASE_API}${relUrl}`;
 
 function getBaseImgUrl() {
   let env = process.env.NODE_ENV;
-  if (env === "production" || env === "staging" || env === "dev") return "";
+  if (env === "production" || env === "staging" || env === "dev") return "http://b.esummit.in";
   else {
     return "http://b.esummit.in";
   }

@@ -1,59 +1,28 @@
 import cv2
-import socketio
-import base64
-import requests
-import argparse
+import numpy as np
+import rtsp
+
+rtsp_server_uri = 'rtsp://127.0.0.1:8554/live'
+client = rtsp.Client(rtsp_server_uri=rtsp_server_uri, verbose=True)
+
+try:
+    print(f"Connected to video source {rtsp_server_uri}.")
+    
+    while True:
+        image = client.read()
+        print(image)
+        # Check if the image is not None before showing it
+        if image is not None:
+            image_np = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+            cv2.imshow('RTSP Stream', image_np)
+
+        # Break the loop when the user presses 'q'
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+finally:
+    client.close()
+    cv2.destroyAllWindows()  # Close any open OpenCV windows
+    print(f"Disconnected from {rtsp_server_uri}.")
 
 
-
-
-# Initialize Socket.IO server
-sio = socketio.Server()
-
-# Create a Socket.IO client
-client = socketio.Client()
-
-# Connect to the server
-client.connect("http://127.0.0.1:5000")
-
-# Room ID to join
-room_id = 10
-
-# Function to send the image to the server
-def send_image(image):
-    # Encode the image as JPEG and then as Base64
-    _, buffer = cv2.imencode('.jpg', image)
-    jpg_bytes = base64.b64encode(buffer)
-
-    # Convert bytes to string for Socket.IO
-    jpg_str = jpg_bytes.decode('utf-8')
-
-    # Emit the 'stream' event with the Base64-encoded image and room ID
-    client.emit('stream', {'image': jpg_str, 'room': room_id})
-
-# Open the video capture device (camera)
-cap = cv2.VideoCapture(0)
-
-while True:
-    # Capture frame-by-frame
-    ret, frame = cap.read()
-
-    # Process the frame (resize, crop, or other operations as needed)
-    # For example, resizing the frame to a specific width and height
-    frame = cv2.resize(frame, (640, 480))
-
-    # Send the processed frame to the server
-    send_image(frame)
-
-    # Display the frame locally (optional)
-    cv2.imshow('Local Stream', frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# Release the capture object and close OpenCV windows
-cap.release()
-cv2.destroyAllWindows()
-
-# Disconnect from the Socket.IO server when the program exits
-client.disconnect()

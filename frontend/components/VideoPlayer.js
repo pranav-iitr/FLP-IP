@@ -6,7 +6,6 @@ const VideoPlayer = (props) => {
 
   useEffect(() => {
     const socket = io(props?.url);
-    // const room_id = room;
 
     socket.emit("joinRoom", props?.room);
 
