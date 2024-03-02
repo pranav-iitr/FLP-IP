@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-1+%oi@%eiua125heh!ed4fy@hpq0w60_vmr93k3j!9r28g&r41
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["gamma.esummit.in",'b.esummit.in']
 
 
 # Application definition
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     # third party
     'rest_framework',
     # local
@@ -116,6 +117,15 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
+                      'content-type', 'accept', 'origin', 'authorization')
+
+CORS_ALLOWED_ORIGINS = '*'
+CORS_ALLOW_CREDENTIALS = True
+
+
+
 # Simple JWT configuration
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=15),
