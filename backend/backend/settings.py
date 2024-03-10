@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-1+%oi@%eiua125heh!ed4fy@hpq0w60_vmr93k3j!9r28g&r41
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["gamma.esummit.in",'b.esummit.in']
+ALLOWED_HOSTS = ["lo.gammarotors.com",'backend.gammarotors.com']
 
 
 # Application definition
@@ -79,7 +79,7 @@ DATABASES = {
     }
 }
 
-WS_URL = "http://ws.esummit.in"
+WS_URL = "https://ws.gammarotors.com"
 
 AUTH_USER_MODEL = 'users.User'
 # Password validation
