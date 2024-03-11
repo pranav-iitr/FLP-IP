@@ -121,7 +121,8 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
                       'content-type', 'accept', 'origin', 'authorization')
 
-CORS_ALLOWED_ORIGINS = '*'
+# CORS_ALLOWED_ORIGINS = ["https://" + i for i in ALLOWED_HOSTS ] + ["http://" + i for i in ALLOWED_HOSTS]
+
 CORS_ALLOW_CREDENTIALS = True
 
 
