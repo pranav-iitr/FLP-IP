@@ -125,7 +125,7 @@ CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
 
 CORS_ALLOW_CREDENTIALS = True
 
-
+CSRF_TRUSTED_ORIGINS = ["https://" + i for i in ALLOWED_HOSTS ] + ["http://" + i for i in ALLOWED_HOSTS]
 
 # Simple JWT configuration
 SIMPLE_JWT = {
