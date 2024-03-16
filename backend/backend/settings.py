@@ -1,5 +1,3 @@
-
-
 from pathlib import Path
 from datetime import timedelta
 
@@ -100,10 +98,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Kolkata'
@@ -120,12 +114,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
                       'content-type', 'accept', 'origin', 'authorization')
-
-# CORS_ALLOWED_ORIGINS = ["https://" + i for i in ALLOWED_HOSTS ] + ["http://" + i for i in ALLOWED_HOSTS]
-
+CORS_ALLOW_METHODS = ('DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT')
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["https://" + i for i in ALLOWED_HOSTS ] + ["http://" + i for i in ALLOWED_HOSTS]
+CSRF_TRUSTED_ORIGINS = ["https://lo.gammarotors.com",'https://backend.gammarotors.com',"http://lo.gammarotors.com",'http://backend.gammarotors.com' ] 
 
 # Simple JWT configuration
 SIMPLE_JWT = {
