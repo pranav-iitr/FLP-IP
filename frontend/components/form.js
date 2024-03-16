@@ -109,7 +109,7 @@ function Form() {
             }}
             className="bg-[#181818] w-full flex mt-8 h-16 justify-center items-center text-[#fff] px-4 py-2 rounded-2xl cursor-pointer "
           >
-            Submmit
+            Submit
           </div>
         </div>
       </div>
