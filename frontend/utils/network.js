@@ -87,7 +87,7 @@ const get_base_api = () => {
   // else if (env == 'staging')
   //   return process.env.STAGING_SERVER;
 
-  return "http://b.esummit.in";
+  return "https://backend.gammarotors.com";
 };
 
 export const BASE_API = get_base_api();
@@ -95,9 +95,9 @@ export const getUrl = (relUrl) => `${BASE_API}${relUrl}`;
 
 function getBaseImgUrl() {
   let env = process.env.NODE_ENV;
-  if (env === "production" || env === "staging" || env === "dev") return "http://b.esummit.in";
+  if (env === "production" || env === "staging" || env === "dev") return "https://backend.gammarotors.com";
   else {
-    return "http://b.esummit.in";
+    return "https://backend.gammarotors.com";
   }
 }
 

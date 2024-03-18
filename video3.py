@@ -7,7 +7,7 @@ import rtsp
 import io
 from PIL import Image
 
-response = requests.get(f"http://b.esummit.in/api/retrive/?id={1}&secret=km4rR4LKV44eu0sqbi4YDg")
+response = requests.get(f"https://backend.gammarotors.com/api/retrive/?id={1}&secret=km4rR4LKV44eu0sqbi4YDg")
 data = response.json()
 print(data)
 # Initialize Socket.IO server
@@ -61,11 +61,11 @@ while True:
     if image is not None:
 
 
-        if counter%3==0:
+        if counter%4==0:
             send_image(image)
 
-        counter += 1 
-        print("working")
+    counter += 1 
+
     cv2.imshow('Local Stream', frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):

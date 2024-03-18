@@ -11,6 +11,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&family=Jura:wght@300..700&display=swap"
+        rel="stylesheet"
+      />
       <body className={inter.className}>{children}</body>
     </html>
   );

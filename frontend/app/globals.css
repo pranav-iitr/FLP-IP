@@ -11,3 +11,7 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+* {
+  font-family: "Jura", sans-serif;
+}
