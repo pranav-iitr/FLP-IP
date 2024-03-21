@@ -6,7 +6,7 @@ class DroneAdmin(admin.ModelAdmin):
     list_display = ( 'name', 'description','organization'  ,'image')
 
     # List of fields to be displayed in the change form, but as read-only
-    readonly_fields = ('secret',)
+    readonly_fields = ('secret','joinning_url','id')
 
 
 admin.site.register(User)
