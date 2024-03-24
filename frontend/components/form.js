@@ -25,29 +25,29 @@ function Form() {
         backdropFilter: "blur(35px)",
         boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
       }}
-      className="flex w-[80vw] h-fit  "
+      className="flex bg-[#FFF] justify-evenly flex-col tablet:flex-row tablet:justify-normal tablet h-full w-full tablet:w-[90%]  laptop:w-[80vw] tablet:h-fit  "
     >
       <Toaster />
-      <div>
-        <Image src="/imgs/bg.png" width={600} height={160} />{" "}
+      <div className=" w-0 tablet:w-[50%]  ">
+        <img className="h-0 tablet:h-full" src="/imgs/bg.png" />{" "}
       </div>
-      <div className="flex  flex-col grow items-center">
-        <div className="pt-8">
-          <Image src="/imgs/Live_Ops.webp" width={240} height={60} />
+      <div className="flex w-full tablet:w-[50%]  flex-col grow items-center">
+        <div className="pt-8 ">
+          <img src="/imgs/Live_Ops.webp" className="w-36 h-12" />
         </div>
         <div
           style={{
             backdropFilter: "blur(35px)",
             boxShadow: "0px 4px 48px 0px rgba(3, 32, 32, 0.20)",
           }}
-          className="w-[80%] flex items-center flex-col rounded-xl mt-8 px-16 py-5 bg-[#F0F0F0]"
+          className="w-[80%]  flex items-center flex-col rounded-xl mt-6 laptop:mt-8 px-4 laptop:px-16 py-5 bg-[#F0F0F0]"
         >
           <h1 className={`  font-medium text-3xl px-3 py-1 text-[#535353]`}>
             {" "}
             Log In{" "}
           </h1>
           <input
-            className="mt-16 w-full bg-[#FFF] backdrop-blur-lg rounded-md text-xl pl-8 py-6 rounded-m"
+            className=" mt-12 laptop:mt-16 w-full bg-[#FFF] backdrop-blur-lg rounded-md text-xl pl-8 py-4 laptop:py-6 rounded-m"
             placeholder="Organization Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -79,7 +79,7 @@ function Form() {
             )}
           </div>
           <input
-            className="mt-4 w-full bg-[#FFF] backdrop-blur-lg rounded-md text-xl pl-8 py-6 rounded-m"
+            className="mt-4 w-full bg-[#FFF] backdrop-blur-lg rounded-md text-xl pl-8 py-4 laptop:py-6 rounded-m"
             placeholder="Send Otp"
             value={OTP}
             onChange={(e) => setOTP(e.target.value)}
@@ -107,11 +107,12 @@ function Form() {
                 toast.error("Genrate OTP");
               }
             }}
-            className="bg-[#181818] w-full flex mt-8 h-16 justify-center items-center text-[#fff] px-4 py-2 rounded-2xl cursor-pointer "
+            className="bg-[#181818] w-full flex mt-8  justify-center items-center text-[#fff] px-4 py-4 laptop:py-6 rounded-2xl cursor-pointer "
           >
             Submit
           </div>
         </div>
+        <img className="h-20 m-8 tablet:h-0 tablet:h-0" src="/imgs/mobileLogo.webp" />
       </div>
     </div>
   );

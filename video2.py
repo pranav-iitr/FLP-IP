@@ -1,15 +1,13 @@
-import cv2
 import socketio
 import base64
 import requests
-import numpy as np
 import rtsp
 import io
 
 
-response = requests.get(f"http://b.esummit.in/api/retrive/?id={1}&secret=km4rR4LKV44eu0sqbi4YDg")
+response = requests.get(f"https://backend.gammarotors.com/api/retrive/?id={1}&secret=Jl3bDV9y_ko929DqY1kTRw")
 data = response.json()
-
+print(data)
 # Initialize Socket.IO server
 sio = socketio.Server()
 
@@ -36,34 +34,39 @@ def send_image(pil_image):
     jpg_str = jpg_bytes.decode('utf-8')
 
     # Emit the 'stream' event with the Base64-encoded image and room ID
-    client.emit('stream', {'image': jpg_str, 'room': room_id})
+    try:
+        client.emit('stream', {'image': jpg_str, 'room': room_id})
+        print("image sent")
+    except Exception as e:
+        print(e)
 
 
 # Open the video capture device (camera)
-url = "rtsp://127.0.0.1:8554/live"
-rtsp_server_uri = 'rtsp://127.0.0.1:8554/live'
-client_RT = rtsp.Client(rtsp_server_uri=rtsp_server_uri, verbose=True)
 
+rtsp_server_uri = 'rtsp://127.0.0.1:8554/live'
+print("connecting to rtsp")
+client_RT = rtsp.Client(rtsp_server_uri=rtsp_server_uri, verbose=True)
+print("connected to rtsp")
 while True:
 
     image = client_RT.read()
         
         # Check if the image is not None before showing it
     if image is not None:
+        print("image is not none")
 
 
-        if counter%3==0:
+        if counter%4==0:
             send_image(image)
 
         counter += 1 
         # cv2.imshow('Local Stream', frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if  0xFF == ord('q'):
             break
 
 
-cv2.destroyAllWindows()
+
 
 # Disconnect from the Socket.IO server when the program exits
 client.disconnect()
-# docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' f1d4bd5d19002dd082f9cd963a9fa3b756c6f69c5baab8a6d4d0f3dfb360bb6d
