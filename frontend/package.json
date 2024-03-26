@@ -10,6 +10,9 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.14",
     "@next/font": "^14.0.4",
     "axios": "^1.6.5",
     "cookies-next": "^4.1.0",

@@ -18,7 +18,7 @@ export function request(
   url,
   data,
   authorized = true,
-  contentType = "application/json"
+  contentType = "application/json",
 ) {
   return new Promise(async (resolve, reject) => {
     let headers = { "content-type": contentType };
@@ -95,7 +95,8 @@ export const getUrl = (relUrl) => `${BASE_API}${relUrl}`;
 
 function getBaseImgUrl() {
   let env = process.env.NODE_ENV;
-  if (env === "production" || env === "staging" || env === "dev") return "https://backend.gammarotors.com";
+  if (env === "production" || env === "staging" || env === "dev")
+    return "https://backend.gammarotors.com";
   else {
     return "https://backend.gammarotors.com";
   }

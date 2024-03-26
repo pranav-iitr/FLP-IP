@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { setCookie } from "cookies-next";
 import { generateOTPrequest, verifyOTPRequest } from "@/hooks/auth";
@@ -112,7 +111,10 @@ function Form() {
             Submit
           </div>
         </div>
-        <img className="h-20 m-8 tablet:h-0 tablet:h-0" src="/imgs/mobileLogo.webp" />
+        <img
+          className="h-20 m-8 tablet:h-0 tablet:h-0"
+          src="/imgs/mobileLogo.webp"
+        />
       </div>
     </div>
   );
