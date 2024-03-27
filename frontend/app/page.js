@@ -4,6 +4,7 @@ import { getCookie, deleteCookie } from "cookies-next";
 import { getDrones, getDrone } from "@/hooks/drone";
 import { BASE_IMG_URL } from "@/utils/network";
 import VideoPlayer from "@/components/VideoPlayer";
+import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Drawer from "@mui/material/Drawer";
 
